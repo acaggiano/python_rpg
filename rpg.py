@@ -194,41 +194,41 @@ def battle(all_combatants, party, enemies):
 
 
 		for person in all_combatants:
+			print(person.name, "\b's Turn")
 			if person in party and person.hp > 0:
 				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
 				choice = input("Enter command number: ")
 				print()
-				if choice == '1':
+				if choice == "1":
 					player_target = pick_target(enemies)
 					print("You attack with your " + person.weapon + "!")
 					person.basic_attack(enemies[player_target])
 					if enemies[player_target].hp <= 0:
 						enemies[player_target].hp = 0
 						print(person.name, "defeated", enemies[player_target].name)
-						break
-					elif choice == "2":
-						if(person.mp >= 2):
-							print("You cast a ball of magic energy at the beast!")
-							person.magic_attack(enemies[0])
-							person.mp = player.mp - 2
-							if enemies[0].hp <= 0:
-								enemies[0].hp = 0
-								print(person.name, "defeated", enemies[0].name)
-								break
-						else:
-							print("You don't have enough mp for that!")
-							continue
+				elif choice == "2":
+					if(person.mp >= 2):
+						player_target = pick_target(enemies)
+						print("You cast a ball of magic energy at the beast!")
+						person.magic_attack(enemies[player_target])
+						person.mp = person.mp - 2
+						if enemies[player_target].hp <= 0:
+							enemies[player_target].hp = 0
+							print(person.name, "defeated", enemies[player_target].name)
+					else:
+						print("You don't have enough mp for that!")
+						continue
 				elif choice == "3":
 					print("You ready yourself for an attack.")
 					person.dfs = person.dfs * 1.5
 				elif choice == "4":
 					print("You stand there and do nothing.")
 				else:
-						print("Input not recoginized! Please enter y or n.\n")
+						print("Input not recoginized!")
 						continue
-			else:
+			elif person in enemies and person.hp > 0:
 				target = random.randrange(0, len(party))
-				print(person.name + " claws at your face!")
+				print(person.name, "attacks", party[target].name)
 				person.basic_attack(party[target])
 
 		party_alive = check_health(party)
@@ -313,6 +313,10 @@ def main():
 	player, player.name = character_create()
 	player.stats_reset()
 
+	friend = Mage()
+	friend.name = "Dude"
+	friend.stats_reset()
+
 	print("You are " + player.name + ", the " + player.class_type)
 	print()
 	print("As you travel throught the forest you encounter a fork in the road.\nWhich way do you go?")
@@ -326,7 +330,7 @@ def main():
 			enemy = Beast()
 			enemy2 = Beast()
 			print("A wild beast appears!")
-			battle([player, enemy, enemy2], [player], [enemy, enemy2])
+			battle([player, friend, enemy, enemy2], [player, friend], [enemy, enemy2])
 			if player.hp > 0:
 				print("Behind the beast was a dead end. Do you want to turn back?")
 				print("1. Yes\n2. No")
