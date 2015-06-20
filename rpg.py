@@ -242,72 +242,7 @@ def battle(all_combatants, party, enemies):
 			print("All enemies have been defeated!")
 		else:
 			print("Double KO?")
-		
-	# while enemy.hp > 0 and player.hp > 0:
-	# 	print("*--------------------*")
-	# 	print("|----Your HP: ", end = "")
-	# 	if player.hp < 10:
-	# 		print(" ", end = "")
-	# 	print(str(player.hp) + "-----|")
-	# 	print("|----Your MP: ", end = "")
-	# 	if player.mp < 10:
-	# 		print(" ", end = "")
-	# 	print(str(player.mp) + "-----|")
-	# 	print("|----Enemy HP: ", end = "")
-	# 	if enemy.hp < 10:
-	# 		print(" ", end = "")
-	# 	print(str(enemy.hp) + "----|")
-	# 	print("|----Enemy MP: ", end = "")
-	# 	if enemy.mp < 10:
-	# 		print(" ", end = "")
-	# 	print(str(enemy.mp) + "----|")
-	# 	print("*--------------------*")
-	# 	print()
-	# 	print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
-	# 	print()
-	# 	choice = input("Enter command number: ")
-	# 	print()
-	# 	if choice == '1':
-	# 		print("You attack the beast with your " + player.weapon + "!")
-	# 		player.basic_attack(enemy)
-	# 		if enemy.hp <= 0:
-	# 			break
-	# 	elif choice == "2":
-	# 		if(player.mp >= 2):
-	# 			print("You cast a ball of magic energy at the beast!")
-	# 			player.magic_attack(enemy)
-	# 			player.mp = player.mp - 2
-	# 			if enemy.hp <= 0:
-	# 				break
-	# 		else:
-	# 			print("You don't have enough mp for that!")
-	# 			continue
-	# 	elif choice == "3":
-	# 		print("You ready yourself for an attack.")
-	# 		player.dfs = player.dfs * 1.5
-	# 	elif choice == "4":
-	# 		print("You stand there and do nothing.")
-	# 	else:
-	# 		print("Input not recoginized! Please enter y or n.\n")
-	# 		continue
-
-	# 	print(enemy.name + " claws at your face!")
-	# 	enemy.basic_attack(player)
-	# 	player.dfs = player.stats['BASE_DFS']
-
-	# if enemy.hp < 0:
-	# 		enemy.hp = 0
-	# if player.hp < 0:
-	# 	player.hp = 0
-
-	# if enemy.hp == 0:
-	# 	print("You've defeated the enemy!")
-	# 	player.exp += enemy.exp
-	# 	print("You've gained " + str(enemy.exp) + " exp!\nTotal Exp: " + str(player.exp))
-	# 	player.check_level_up()
-	# elif player.hp == 0:
-	# 	print("You've been killed.")
-
+	
 def main():
 
 	player, player.name = character_create()
