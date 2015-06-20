@@ -206,6 +206,7 @@ def battle(all_combatants, party, enemies):
 					if enemies[player_target].hp <= 0:
 						enemies[player_target].hp = 0
 						print(person.name, "defeated", enemies[player_target].name)
+						enemies.pop(player_target)
 				elif choice == "2":
 					if(person.mp >= 2):
 						player_target = pick_target(enemies)
@@ -215,6 +216,7 @@ def battle(all_combatants, party, enemies):
 						if enemies[player_target].hp <= 0:
 							enemies[player_target].hp = 0
 							print(person.name, "defeated", enemies[player_target].name)
+							enemies.pop(player_target)
 					else:
 						print("You don't have enough mp for that!")
 						continue
@@ -228,8 +230,15 @@ def battle(all_combatants, party, enemies):
 						continue
 			elif person in enemies and person.hp > 0:
 				target = random.randrange(0, len(party))
-				print(person.name, "attacks", party[target].name)
-				person.basic_attack(party[target])
+				valid_target = party[target].hp > 0
+
+				while not valid_target:
+					target = random.randrange(0, len(party))
+					valid_target = party[target].hp > 0
+				else:
+					print(person.name, "attacks", party[target].name)
+					person.basic_attack(party[target])
+					target = random.randrange(0, len(party))
 
 		party_alive = check_health(party)
 		enemies_alive = check_health(enemies)
