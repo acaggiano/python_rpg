@@ -332,7 +332,8 @@ def main():
 		while not back:
 			slime = Slime()
 			slime2 = Slime()
-			print("A wild beast appears!")
+
+			print("Enemies Appear!")
 			battle([player, friend, slime, slime2], [player, friend], [slime, slime2])
 			if player.hp > 0:
 				print("Behind the beast was a dead end. Do you want to turn back?")
