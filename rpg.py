@@ -9,20 +9,27 @@ class Character:
 
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
-		type(damage)
+		crit = random.randrange(self.luck, 100, 5)
 		if damage <= 0:
 			print("The attack has no effect.")
 			damage = 0
 		else:
+			if(crit > 85):
+				damage = int(damage * 1.5)
+				print("Critical Hit!")
 			defender.hp = defender.hp - damage
 			print(self.name + " did " + str(damage) + " damage!")
 
 	def magic_attack(self, defender):
 		damage = self.magic_atk - defender.dfs
+		crit = random.randrange(self.luck, 100, 5)
 		if damage <= 0:
 			print("The attack has no effect.")
 			damage = 0
 		else:
+			if(crit > 85):
+				damage = damage * 1.5
+				print("Critical Hit!")
 			defender.hp = defender.hp - damage
 			print(self.name + " did " + str(damage) + " damage!")
 
@@ -38,7 +45,7 @@ class Player(Character):
 		self.lvl = 1
 		self.exp = 0
 
-	def stats_reset(self):
+	def stats_init(self):
 		self.hp = self.stats['BASE_HP']
 		self.mp = self.stats['BASE_MP']
 		self.atk = self.stats['BASE_ATK']
@@ -48,7 +55,6 @@ class Player(Character):
 		self.luck = self.stats['BASE_LUCK']
 
 	def level_up(self, modifiers):
-		self.lvl += 1
 		print()
 		print("*------------ LEVEL UP ------------*")
 		print("Level " + str(self.lvl)+ " stats:")
@@ -59,7 +65,7 @@ class Player(Character):
 		print("\tMagic Attack: ", self.stats['BASE_MAGIC_ATK'])
 		for stat, value in self.stats.items():
 			self.stats[stat] = value + modifiers[stat]
-
+		self.lvl += 1
 		print("Level " + str(self.lvl)+ " stats: ")
 		print("\tHP: ", self.stats['BASE_HP'])
 		print("\tMP: ", self.stats['BASE_MP'])
@@ -68,6 +74,7 @@ class Player(Character):
 		print("\tMagic Attack: ", self.stats['BASE_MAGIC_ATK'])
 		print("*----------------------------------*")
 		print()
+
 			
 
 	def check_level_up(self):
@@ -78,11 +85,15 @@ class Player(Character):
 				levels.remove(value)
 				break
 
+	def calculate_experience(self, enemies):
+		for enemy in enemies:
+			self.exp = self.exp + enemy.exp
+
 class Fighter(Player):
 	"""Defines Fighter Class"""
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.class_type = "fighter"
+		self.class_type = "Fighter"
 		self.weapon = "sword"
 		self.stats['BASE_HP'] = self.base_hp + 2
 		self.stats['BASE_MP'] = 2
@@ -97,10 +108,10 @@ class Mage(Player):
 	"""Defines Mage Class"""
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.class_type = "mage"
+		self.class_type = "Mage"
 		self.weapon = "wand"
 		self.lvl = 1
-		self.stats['BASE_HP'] = self.base_hp + 2
+		self.stats['BASE_HP'] = self.base_hp
 		self.stats['BASE_MP'] = 8
 		self.stats['BASE_ATK']  = 5
 		self.stats['BASE_DFS'] = 4
@@ -109,11 +120,32 @@ class Mage(Player):
 		self.stats['BASE_LUCK'] = 5
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 4, 'BASE_ATK': 1, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 3, 'BASE_SPD': 2, 'BASE_LUCK': 1}
 
-class Beast(Character):
+class Rogue(Player):
+	"""Defines Rogue Class"""
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.class_type = "Rogue"
+		self.weapon = "dagger"
+		self.lvl = 1
+		self.stats['BASE_HP'] = self.base_hp
+		self.stats['BASE_MP'] = 4
+		self.stats['BASE_ATK']  = 7
+		self.stats['BASE_DFS'] = 4
+		self.stats['BASE_MAGIC_ATK'] = 7
+		self.stats['BASE_SPD'] = 10
+		self.stats['BASE_LUCK'] = 10
+		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 2, 'BASE_ATK': 2, 'BASE_DFS': 1, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 3, 'BASE_LUCK': 3}
+
+class Enemy(Character):
+	"""Create Enemy"""
+	def __init__(self):
+		super(Enemy, self).__init__()
+		
+class Slime(Enemy):
 	"""Create Beast Enemy"""
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.name = "The Beast"
+		self.name = "Slime"
 		self.hp = 10
 		self.mp = 0
 		self.atk = 7
@@ -121,6 +153,19 @@ class Beast(Character):
 		self.spd = 3
 		self.luck = 1
 		self.exp = 50
+
+class Item:
+	"""Define item class"""
+	def __init__(self):
+		self.modifiers = {}
+		self.name = ""
+		self.type = ""
+
+class Weapon(Item):
+	"""Define Weapon Item"""
+	def __init__(self):
+		super(Weapon, self).__init__()
+		self.type = "weapon"
 
 def character_create():
 	name = input("Hello brave adventurer, what is your name? : ")
@@ -168,6 +213,8 @@ def pick_target(enemies):
 	while not valid_target:
 		target = int(input("Pick Target: "))
 		valid_target = target >= 0 and target <= len(enemies)-1
+		if not valid_target:
+			print("Invalid Target")
 		continue
 	else:
 		return target
@@ -177,6 +224,8 @@ def battle(all_combatants, party, enemies):
 
 	party_alive = True
 	enemies_alive = True
+
+	enemies_defeated = []
 
 	while party_alive and enemies_alive:
 
@@ -194,8 +243,8 @@ def battle(all_combatants, party, enemies):
 
 
 		for person in all_combatants:
-			print(person.name, "\b's Turn")
 			if person in party and person.hp > 0:
+				print(person.name, "\b's Turn")
 				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
 				choice = input("Enter command number: ")
 				print()
@@ -206,6 +255,7 @@ def battle(all_combatants, party, enemies):
 					if enemies[player_target].hp <= 0:
 						enemies[player_target].hp = 0
 						print(person.name, "defeated", enemies[player_target].name)
+						enemies_defeated.append(enemies[player_target])
 						enemies.pop(player_target)
 				elif choice == "2":
 					if(person.mp >= 2):
@@ -216,6 +266,7 @@ def battle(all_combatants, party, enemies):
 						if enemies[player_target].hp <= 0:
 							enemies[player_target].hp = 0
 							print(person.name, "defeated", enemies[player_target].name)
+							enemies_defeated.append(enemies[player_target])
 							enemies.pop(player_target)
 					else:
 						print("You don't have enough mp for that!")
@@ -228,7 +279,12 @@ def battle(all_combatants, party, enemies):
 				else:
 						print("Input not recoginized!")
 						continue
+				enemies_alive = check_health(enemies)
+				if not enemies_alive:
+					break
+
 			elif person in enemies and person.hp > 0:
+				print(person.name, "\b's Turn")
 				target = random.randrange(0, len(party))
 				valid_target = party[target].hp > 0
 
@@ -240,26 +296,29 @@ def battle(all_combatants, party, enemies):
 					person.basic_attack(party[target])
 					target = random.randrange(0, len(party))
 
-		party_alive = check_health(party)
-		enemies_alive = check_health(enemies)
+				party_alive = check_health(party)
+				if not party_alive:
+					break
 
 	else:
 		if not party_alive and enemies_alive:
 			print("You're party has died...")
 		elif not enemies_alive and party_alive:
-			print(enemies_alive)
 			print("All enemies have been defeated!")
+			for person in party:
+				person.calculate_experience(enemies_defeated)
+				person.check_level_up()
 		else:
 			print("Double KO?")
 	
 def main():
 
 	player, player.name = character_create()
-	player.stats_reset()
+	player.stats_init()
 
 	friend = Mage()
 	friend.name = "Dude"
-	friend.stats_reset()
+	friend.stats_init()
 
 	print("You are " + player.name + ", the " + player.class_type)
 	print()
@@ -271,10 +330,10 @@ def main():
 	if direction == "1":
 		back = False
 		while not back:
-			enemy = Beast()
-			enemy2 = Beast()
+			slime = Slime()
+			slime2 = Slime()
 			print("A wild beast appears!")
-			battle([player, friend, enemy, enemy2], [player, friend], [enemy, enemy2])
+			battle([player, friend, slime, slime2], [player, friend], [slime, slime2])
 			if player.hp > 0:
 				print("Behind the beast was a dead end. Do you want to turn back?")
 				print("1. Yes\n2. No")
