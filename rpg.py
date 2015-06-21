@@ -56,7 +56,7 @@ class Player(Character):
 
 	def level_up(self, modifiers):
 		print()
-		print("*------------ LEVEL UP ------------*")
+		print("*---", self.name,"LEVELED UP! ---*")
 		print("Level " + str(self.lvl)+ " stats:")
 		print("\tHP: ", self.stats['BASE_HP'])
 		print("\tMP: ", self.stats['BASE_MP'])
@@ -74,8 +74,6 @@ class Player(Character):
 		print("\tMagic Attack: ", self.stats['BASE_MAGIC_ATK'])
 		print("*----------------------------------*")
 		print()
-
-			
 
 	def check_level_up(self):
 		levels = [100, 250, 500, 1200]
@@ -170,7 +168,7 @@ class Weapon(Item):
 def character_create():
 	name = input("Hello brave adventurer, what is your name? : ")
 	print()
-	print("1. Fighter\n2. Mage")
+	print("1. Fighter\n2. Mage\n3. Rogue")
 	print()
 	
 	chosen = False
@@ -183,8 +181,11 @@ def character_create():
 		elif class_choice == "2":
 			return Mage(), name
 			chosen = True
+		elif class_choice == "3":
+			return Rogue(), name
+			chosen = True
 		else:
-			print("Invalid input. Please pick 1 or 2")
+			print("Invalid input. Please pick 1, 2, 3")
 			continue
 
 def turn_order(combatants):
