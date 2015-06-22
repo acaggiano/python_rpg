@@ -3,9 +3,10 @@ import random
 
 class Character:
 	"""Create Character Class"""
+	stats = {}
 	def __init__(self):
 		self.name = ""
-		self.stats = {}
+		
 
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
@@ -18,7 +19,7 @@ class Character:
 				damage = int(damage * 1.5)
 				print("Critical Hit!")
 			defender.hp = defender.hp - damage
-			print(self.name + " did " + str(damage) + " damage!")
+			print("{} did {} damage!".format(self.name, damage))
 
 	def magic_attack(self, defender):
 		damage = self.magic_atk - defender.dfs
@@ -31,7 +32,7 @@ class Character:
 				damage = damage * 1.5
 				print("Critical Hit!")
 			defender.hp = defender.hp - damage
-			print(self.name + " did " + str(damage) + " damage!")
+			print("{} did {} damage!".format(self.name, damage))
 
 	def defend(self):
 		pass
@@ -56,8 +57,8 @@ class Player(Character):
 
 	def level_up(self, modifiers):
 		print()
-		print("*---", self.name,"LEVELED UP! ---*")
-		print("Level " + str(self.lvl)+ " stats:")
+		print("*--- {} LEVELED UP! ---*".format(self.name))
+		print("Level {} stats:".format(self.lvl))
 		print("\tHP: ", self.stats['BASE_HP'])
 		print("\tMP: ", self.stats['BASE_MP'])
 		print("\tAttack: ", self.stats['BASE_ATK'])
@@ -66,7 +67,7 @@ class Player(Character):
 		for stat, value in self.stats.items():
 			self.stats[stat] = value + modifiers[stat]
 		self.lvl += 1
-		print("Level " + str(self.lvl)+ " stats: ")
+		print("Level {} stats:".format(self.lvl))
 		print("\tHP: ", self.stats['BASE_HP'])
 		print("\tMP: ", self.stats['BASE_MP'])
 		print("\tAttack: ", self.stats['BASE_ATK'])
@@ -137,13 +138,11 @@ class Rogue(Player):
 class Enemy(Character):
 	"""Create Enemy"""
 	def __init__(self):
-		super(Enemy, self).__init__()
+		super().__init__()
 		
 class Slime(Enemy):
 	"""Create Beast Enemy"""
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.name = "Slime"
+	def __init__(self):
 		self.hp = 10
 		self.mp = 0
 		self.atk = 7
@@ -151,6 +150,8 @@ class Slime(Enemy):
 		self.spd = 3
 		self.luck = 1
 		self.exp = 50
+		super().__init__()
+		self.name = "Slime"
 
 class Item:
 	"""Define item class"""
@@ -206,8 +207,8 @@ def pick_target(enemies):
 	print("Which enemy do you target?")
 	print()
 
-	for enemy in enemies:
-		print(enemies.index(enemy), "\b.", enemy.name, "HP:", enemy.hp)
+	for idx, enemy in enumerate(enemies):
+		print("{}. {} HP: {}".format(idx, enemy.name, enemy.hp))
 
 	valid_target = False
 
@@ -232,13 +233,13 @@ def battle(all_combatants, party, enemies):
 
 		print("*-------------------*")
 		for person in party:
-			print(person.name + "\'s HP: " + str(person.hp))
-			print(person.name + "\'s MP: " + str(person.mp))
-			print("|-------------------|")
+			print("{}'s HP: {}".format(person.name, person.hp))
+			print("{}'s MP: {}".format(person.name, person.mp))
+			print("-------------------")
 		for enemy in enemies:
-			print(enemy.name + "\'s HP: " + str(enemy.hp))
-			print(enemy.name + "\'s MP: " + str(enemy.mp))
-			print("|-------------------|")
+			print("{}s HP: {}".format(enemy.name, enemy.hp))
+			print("{}s MP: {}".format(enemy.name, enemy.mp))
+			print("-------------------")
 		print("*-------------------*")
 		print()
 
@@ -251,12 +252,12 @@ def battle(all_combatants, party, enemies):
 				print()
 				if choice == "1":
 					player_target = pick_target(enemies)
-					print("You attack with your " + person.weapon + "!")
+					print("You attack with your {}!".format(person.weapon))
 					person.basic_attack(enemies[player_target])
 					if enemies[player_target].hp <= 0:
 						enemies[player_target].hp = 0
-						print(person.name, "defeated", enemies[player_target].name)
-						enemies_defeated.append(enemies[player_target])
+						print("{} defeated {}".format(person.name, enemies[player_target].name))
+						enemies_defeated.append(enemies[player_target].name)
 						enemies.pop(player_target)
 				elif choice == "2":
 					if(person.mp >= 2):
@@ -266,7 +267,7 @@ def battle(all_combatants, party, enemies):
 						person.mp = person.mp - 2
 						if enemies[player_target].hp <= 0:
 							enemies[player_target].hp = 0
-							print(person.name, "defeated", enemies[player_target].name)
+							print("{} defeated {}".format(person.name, enemies[player_target].name))
 							enemies_defeated.append(enemies[player_target])
 							enemies.pop(player_target)
 					else:
