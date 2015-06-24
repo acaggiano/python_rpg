@@ -262,7 +262,7 @@ def battle(all_combatants, party, enemies):
 					if enemies[player_target].hp <= 0:
 						enemies[player_target].hp = 0
 						print("{} defeated {}".format(person.name, enemies[player_target].name))
-						enemies_defeated.append(enemies[player_target].name)
+						enemies_defeated.append(enemies[player_target])
 						enemies.pop(player_target)
 				elif choice == "2":
 					if(person.mp >= 2):
@@ -313,7 +313,7 @@ def battle(all_combatants, party, enemies):
 		elif not enemies_alive and party_alive:
 			print("All enemies have been defeated!")
 			for person in party:
-				#person.calculate_experience(enemies_defeated)
+				person.calculate_experience(enemies_defeated)
 				person.check_level_up()
 		else:
 			print("Double KO?")
