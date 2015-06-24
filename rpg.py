@@ -4,8 +4,8 @@ import random
 class Character:
 	"""Create Character Class"""
 	stats = {}
-	def __init__(self):
-		self.name = ""
+	def __init__(self, new_name):
+		self.name = new_name
 		
 
 	def basic_attack(self, defender):
@@ -41,10 +41,10 @@ class Character:
 class Player(Character):
 	"""Create Player Class"""
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
 		self.base_hp = 10
 		self.lvl = 1
 		self.exp = 0
+		super().__init__(*args, **kwargs)
 
 	def stats_init(self):
 		self.hp = self.stats['BASE_HP']
@@ -91,10 +91,9 @@ class Player(Character):
 class Fighter(Player):
 	"""Defines Fighter Class"""
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
 		self.class_type = "Fighter"
 		self.weapon = "sword"
-		self.stats['BASE_HP'] = self.base_hp + 2
+		self.stats['BASE_HP'] = 12
 		self.stats['BASE_MP'] = 2
 		self.stats['BASE_ATK'] = 10
 		self.stats['BASE_DFS'] = 5
@@ -102,6 +101,8 @@ class Fighter(Player):
 		self.stats['BASE_SPD'] = 4
 		self.stats['BASE_LUCK'] = 6
 		self.modifiers = {'BASE_HP': 4, 'BASE_MP': 1, 'BASE_ATK': 2, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 1, 'BASE_LUCK': 1}
+		self.stats_init()
+		super().__init__(*args, **kwargs)
 		
 class Mage(Player):
 	"""Defines Mage Class"""
@@ -118,11 +119,13 @@ class Mage(Player):
 		self.stats['BASE_SPD'] = 7
 		self.stats['BASE_LUCK'] = 5
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 4, 'BASE_ATK': 1, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 3, 'BASE_SPD': 2, 'BASE_LUCK': 1}
+		self.stats_init()
+		super().__init__(*args, **kwargs)
+
 
 class Rogue(Player):
 	"""Defines Rogue Class"""
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
 		self.class_type = "Rogue"
 		self.weapon = "dagger"
 		self.lvl = 1
@@ -134,11 +137,14 @@ class Rogue(Player):
 		self.stats['BASE_SPD'] = 10
 		self.stats['BASE_LUCK'] = 10
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 2, 'BASE_ATK': 2, 'BASE_DFS': 1, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 3, 'BASE_LUCK': 3}
+		self.stats_init()
+		super().__init__(*args, **kwargs)
+
 
 class Enemy(Character):
 	"""Create Enemy"""
-	def __init__(self):
-		super().__init__()
+	def __init__(self, new_name):
+		super().__init__(new_name)
 		
 class Slime(Enemy):
 	"""Create Beast Enemy"""
@@ -150,8 +156,7 @@ class Slime(Enemy):
 		self.spd = 3
 		self.luck = 1
 		self.exp = 50
-		super().__init__()
-		self.name = "Slime"
+		super().__init__("Slime")
 
 class Item:
 	"""Define item class"""
@@ -163,8 +168,8 @@ class Item:
 class Weapon(Item):
 	"""Define Weapon Item"""
 	def __init__(self):
-		super(Weapon, self).__init__()
 		self.type = "weapon"
+		super(Weapon, self).__init__()
 
 def character_create():
 	name = input("Hello brave adventurer, what is your name? : ")
@@ -177,7 +182,7 @@ def character_create():
 		class_choice = input("Please choose a class: ")
 		print()
 		if class_choice == "1":
-			return Fighter(), name
+			return Fighter(name)
 			chosen = True
 		elif class_choice == "2":
 			return Mage(), name
@@ -308,19 +313,17 @@ def battle(all_combatants, party, enemies):
 		elif not enemies_alive and party_alive:
 			print("All enemies have been defeated!")
 			for person in party:
-				person.calculate_experience(enemies_defeated)
+				#person.calculate_experience(enemies_defeated)
 				person.check_level_up()
 		else:
 			print("Double KO?")
 	
 def main():
 
-	player, player.name = character_create()
+	player = character_create()
 	player.stats_init()
 
-	friend = Mage()
-	friend.name = "Dude"
-	friend.stats_init()
+	friend = Mage("Dude")
 
 	print("You are " + player.name + ", the " + player.class_type)
 	print()
