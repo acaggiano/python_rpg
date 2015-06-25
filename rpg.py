@@ -7,7 +7,6 @@ class Character:
 	def __init__(self, new_name):
 		self.name = new_name
 		
-
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
 		crit = random.randrange(self.luck, 100, 5)
@@ -107,11 +106,10 @@ class Fighter(Player):
 class Mage(Player):
 	"""Defines Mage Class"""
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
 		self.class_type = "Mage"
 		self.weapon = "wand"
 		self.lvl = 1
-		self.stats['BASE_HP'] = self.base_hp
+		self.stats['BASE_HP'] = 10
 		self.stats['BASE_MP'] = 8
 		self.stats['BASE_ATK']  = 5
 		self.stats['BASE_DFS'] = 4
@@ -129,7 +127,7 @@ class Rogue(Player):
 		self.class_type = "Rogue"
 		self.weapon = "dagger"
 		self.lvl = 1
-		self.stats['BASE_HP'] = self.base_hp
+		self.stats['BASE_HP'] = 10
 		self.stats['BASE_MP'] = 4
 		self.stats['BASE_ATK']  = 7
 		self.stats['BASE_DFS'] = 4
@@ -218,8 +216,12 @@ def pick_target(enemies):
 	valid_target = False
 
 	while not valid_target:
-		target = int(input("Pick Target: "))
-		valid_target = target >= 0 and target <= len(enemies)-1
+		target = input("Pick Target: ")
+		try:
+			target = int(target)
+			valid_target = 0 <= target <= idx
+		except ValueError:
+			pass
 		if not valid_target:
 			print("Invalid Target")
 		continue
@@ -253,37 +255,42 @@ def battle(all_combatants, party, enemies):
 			if person in party and person.hp > 0:
 				print(person.name, "\b's Turn")
 				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
-				choice = input("Enter command number: ")
-				print()
-				if choice == "1":
-					player_target = pick_target(enemies)
-					print("You attack with your {}!".format(person.weapon))
-					person.basic_attack(enemies[player_target])
-					if enemies[player_target].hp <= 0:
-						enemies[player_target].hp = 0
-						print("{} defeated {}".format(person.name, enemies[player_target].name))
-						enemies_defeated.append(enemies[player_target])
-						enemies.pop(player_target)
-				elif choice == "2":
-					if(person.mp >= 2):
+
+				valid_input = False
+
+				while not valid_input:
+					choice = input("Enter command number: ")
+					valid_input = choice in ["1", "2", "3", "4"]
+					print() 
+					if choice == "1":
 						player_target = pick_target(enemies)
-						print("You cast a ball of magic energy at the beast!")
-						person.magic_attack(enemies[player_target])
-						person.mp = person.mp - 2
+						print("You attack with your {}!".format(person.weapon))
+						person.basic_attack(enemies[player_target])
 						if enemies[player_target].hp <= 0:
 							enemies[player_target].hp = 0
 							print("{} defeated {}".format(person.name, enemies[player_target].name))
 							enemies_defeated.append(enemies[player_target])
 							enemies.pop(player_target)
+					elif choice == "2":
+						if(person.mp >= 2):
+							player_target = pick_target(enemies)
+							print("You cast a ball of magic energy at the beast!")
+							person.magic_attack(enemies[player_target])
+							person.mp = person.mp - 2
+							if enemies[player_target].hp <= 0:
+								enemies[player_target].hp = 0
+								print("{} defeated {}".format(person.name, enemies[player_target].name))
+								enemies_defeated.append(enemies[player_target])
+								enemies.pop(player_target)
+						else:
+							print("You don't have enough mp for that!")
+							continue
+					elif choice == "3":
+						print("You ready yourself for an attack.")
+						person.dfs = person.dfs * 1.5
+					elif choice == "4":
+						print("You stand there and do nothing.")
 					else:
-						print("You don't have enough mp for that!")
-						continue
-				elif choice == "3":
-					print("You ready yourself for an attack.")
-					person.dfs = person.dfs * 1.5
-				elif choice == "4":
-					print("You stand there and do nothing.")
-				else:
 						print("Input not recoginized!")
 						continue
 				enemies_alive = check_health(enemies)
