@@ -9,6 +9,11 @@ class Character:
 		
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
+		hit_chance = self.spd/defender.spd
+		percent = random.random()
+		if(hit_chance < percent):
+			print("{} missed!".format(self.name))
+			return
 		crit = random.randrange(self.luck, 100, 5)
 		if damage <= 0:
 			print("The attack has no effect.")
@@ -151,7 +156,7 @@ class Slime(Enemy):
 		self.mp = 0
 		self.atk = 7
 		self.dfs = 4
-		self.spd = 3
+		self.spd = 15
 		self.luck = 1
 		self.exp = 50
 		super().__init__("Slime")
@@ -183,10 +188,10 @@ def character_create():
 			return Fighter(name)
 			chosen = True
 		elif class_choice == "2":
-			return Mage(), name
+			return Mage(name)
 			chosen = True
 		elif class_choice == "3":
-			return Rogue(), name
+			return Rogue(name)
 			chosen = True
 		else:
 			print("Invalid input. Please pick 1, 2, 3")
