@@ -6,15 +6,12 @@ class Character:
 	stats = {}
 	def __init__(self, new_name):
 		self.name = new_name
-		
+
+
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
-		hit_chance = self.spd/defender.spd
-		percent = random.random()
-		if(hit_chance < percent):
-			print("{} missed!".format(self.name))
-			return
 		crit = random.randrange(self.luck, 100, 5)
+
 		if damage <= 0:
 			print("The attack has no effect.")
 			damage = 0
@@ -107,7 +104,7 @@ class Fighter(Player):
 		self.modifiers = {'BASE_HP': 4, 'BASE_MP': 1, 'BASE_ATK': 2, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 1, 'BASE_LUCK': 1}
 		self.stats_init()
 		super().__init__(*args, **kwargs)
-		
+
 class Mage(Player):
 	"""Defines Mage Class"""
 	def __init__(self, *args, **kwargs):
@@ -148,7 +145,7 @@ class Enemy(Character):
 	"""Create Enemy"""
 	def __init__(self, new_name):
 		super().__init__(new_name)
-		
+
 class Slime(Enemy):
 	"""Create Beast Enemy"""
 	def __init__(self):
@@ -179,7 +176,7 @@ def character_create():
 	print()
 	print("1. Fighter\n2. Mage\n3. Rogue")
 	print()
-	
+
 	chosen = False
 	while not chosen:
 		class_choice = input("Please choose a class: ")
@@ -232,7 +229,7 @@ def pick_target(enemies):
 		continue
 	else:
 		return target
-	
+
 def battle(all_combatants, party, enemies):
 	all_combatants = turn_order(all_combatants)
 
@@ -266,7 +263,7 @@ def battle(all_combatants, party, enemies):
 				while not valid_input:
 					choice = input("Enter command number: ")
 					valid_input = choice in ["1", "2", "3", "4"]
-					print() 
+					print()
 					if choice == "1":
 						player_target = pick_target(enemies)
 						print("You attack with your {}!".format(person.weapon))
@@ -329,7 +326,7 @@ def battle(all_combatants, party, enemies):
 				person.check_level_up()
 		else:
 			print("Double KO?")
-	
+
 def main():
 
 	player = character_create()
@@ -371,8 +368,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-	
-
-
-
-	
