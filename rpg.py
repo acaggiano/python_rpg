@@ -10,17 +10,30 @@ class Character:
 
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
-		crit = random.randrange(self.luck, 100, 5)
+		
 
-		if damage <= 0:
-			print("The attack has no effect.")
-			damage = 0
+		spd_diff = self.spd - defender.spd
+
+		hit_chance = 75
+
+		hit_chance = hit_chance + spd_diff
+
+		hit_prob = random.randrange(self.luck, hit_chance)
+
+		if hit_prob < 25:
+			print("{}'s attack missed!".format(self.name))
+			return
 		else:
-			if(crit > 85):
-				damage = int(damage * 1.5)
-				print("Critical Hit!")
-			defender.hp = defender.hp - damage
-			print("{} did {} damage!".format(self.name, damage))
+			crit = random.randrange(self.luck, 100, 5)
+			if damage <= 0:
+				print("The attack has no effect.")
+				damage = 0
+			else:
+				if(crit > 85):
+					damage = int(damage * 1.5)
+					print("Critical Hit!")
+				defender.hp = defender.hp - damage
+				print("{} did {} damage!".format(self.name, damage))
 
 	def magic_attack(self, defender):
 		damage = self.magic_atk - defender.dfs
@@ -60,20 +73,20 @@ class Player(Character):
 		print()
 		print("*--- {} LEVELED UP! ---*".format(self.name))
 		print("Level {} stats:".format(self.lvl))
-		print("\tHP: ", self.stats['BASE_HP'])
-		print("\tMP: ", self.stats['BASE_MP'])
-		print("\tAttack: ", self.stats['BASE_ATK'])
-		print("\tDefense: ", self.stats['BASE_DFS'])
-		print("\tMagic Attack: ", self.stats['BASE_MAGIC_ATK'])
+		print("\tHP: {}".format(self.stats['BASE_HP']))
+		print("\tMP: {}".format(self.stats['BASE_MP']))
+		print("\tAttack: {}".format(self.stats['BASE_ATK']))
+		print("\tDefense: {}".format(self.stats['BASE_DFS']))
+		print("\tMagic Attack: {}".format(self.stats['BASE_MAGIC_ATK']))
 		for stat, value in self.stats.items():
 			self.stats[stat] = value + modifiers[stat]
 		self.lvl += 1
 		print("Level {} stats:".format(self.lvl))
-		print("\tHP: ", self.stats['BASE_HP'])
-		print("\tMP: ", self.stats['BASE_MP'])
-		print("\tAttack: ", self.stats['BASE_ATK'])
-		print("\tDefense: ", self.stats['BASE_DFS'])
-		print("\tMagic Attack: ", self.stats['BASE_MAGIC_ATK'])
+		print("\tHP: {}".format(self.stats['BASE_HP']))
+		print("\tMP: {}".format(self.stats['BASE_MP']))
+		print("\tAttack: {}".format(self.stats['BASE_ATK']))
+		print("\tDefense: {}".format(self.stats['BASE_DFS']))
+		print("\tMagic Attack: {}".format(self.stats['BASE_MAGIC_ATK']))
 		print("*----------------------------------*")
 		print()
 
@@ -153,7 +166,7 @@ class Slime(Enemy):
 		self.mp = 0
 		self.atk = 7
 		self.dfs = 4
-		self.spd = 15
+		self.spd = 4
 		self.luck = 1
 		self.exp = 50
 		super().__init__("Slime")
@@ -255,7 +268,7 @@ def battle(all_combatants, party, enemies):
 
 		for person in all_combatants:
 			if person in party and person.hp > 0:
-				print(person.name, "\b's Turn")
+				print("{}'s Turn".format(person.name))
 				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
 
 				valid_input = False
@@ -300,7 +313,7 @@ def battle(all_combatants, party, enemies):
 					break
 
 			elif person in enemies and person.hp > 0:
-				print(person.name, "\b's Turn")
+				print("{}'s Turn".format(person.name))
 				target = random.randrange(0, len(party))
 				valid_target = party[target].hp > 0
 
@@ -308,7 +321,7 @@ def battle(all_combatants, party, enemies):
 					target = random.randrange(0, len(party))
 					valid_target = party[target].hp > 0
 				else:
-					print(person.name, "attacks", party[target].name)
+					print("{} attacks {}".format(person.name, party[target].name))
 					person.basic_attack(party[target])
 					target = random.randrange(0, len(party))
 
@@ -334,7 +347,7 @@ def main():
 
 	friend = Mage("Dude")
 
-	print("You are " + player.name + ", the " + player.class_type)
+	print("You are {}, the {}".format(player.name, player.class_type))
 	print()
 	print("As you travel throught the forest you encounter a fork in the road.\nWhich way do you go?")
 	print("1. Left\n2. Right")

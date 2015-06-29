@@ -1,4 +1,4 @@
-# add evasion and accuracy to attacks 
-# subtract speed and then seperate them between <0, >0 & 0
-# if diff > 10 do something
-# add luck somehow
+# add items and weapons
+# 	take stats and add item modifiers to stats
+# 	similar to level up function
+# investigate level up bug
