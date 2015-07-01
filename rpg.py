@@ -8,28 +8,30 @@ class Character:
 		pass
 
 	def basic_attack(self, defender):
+		#calculate damage
 		damage = self.atk - defender.dfs
-
+		# calculate hit chance
 		spd_diff = self.spd - defender.spd
-
 		hit_chance = 75
-
 		hit_chance = hit_chance + spd_diff
-
 		hit_prob = random.randrange(self.luck, hit_chance)
-
+		# on hit fail
 		if hit_prob < 15:
 			print("{}'s attack missed!".format(self.name))
 			return
+		# on hit success
 		else:
-			crit = random.randrange(self.luck, 100, 5)
+			# output no damage
 			if damage <= 0:
 				print("The attack has no effect.")
 				damage = 0
 			else:
 				if(crit > 85):
+					# calculate crit chance and damage
+					crit = random.randrange(self.luck, 100, 5)
 					damage = int(damage * 1.5)
 					print("Critical Hit!")
+				# calculate defender hp
 				defender.hp = defender.hp - damage
 				print("{} did {} damage!".format(self.name, damage))
 
@@ -49,14 +51,15 @@ class Character:
 	def defend(self):
 		pass
 
-
 class Player(Character):
 	"""Create Player Class"""
+	# initialize player at level 1 with 0 experience
 	exp = 0
 	lvl = 1
 	def __init__(self):
 		pass
 
+	#define stats from base stats of subclass
 	def stats_init(self):
 		self.hp = self.stats['BASE_HP']
 		self.mp = self.stats['BASE_MP']
@@ -66,6 +69,7 @@ class Player(Character):
 		self.spd = self.stats['BASE_SPD']
 		self.luck = self.stats['BASE_LUCK']
 
+	# loop through base stats dict and add level up modifiers
 	def level_up(self):
 		print()
 		print("*--- {} LEVELED UP! ---*".format(self.name))
@@ -78,6 +82,7 @@ class Player(Character):
 		print()
 		self.stats_init()
 
+	# check level requirements and call level up on self if met
 	def check_level_up(self):
 		self.levels = [100, 250, 500, 1200]
 		for value in self.levels:
@@ -86,6 +91,7 @@ class Player(Character):
 				self.levels.remove(value)
 				break
 
+	# take in enemies defeated from battle and add exp to total player controlled character
 	def calculate_experience(self, enemies):
 		exp_gain = 0
 		for enemy in enemies:
@@ -94,6 +100,7 @@ class Player(Character):
 		print("{} gained {} exp!".format(self.name, exp_gain))
 		print("{}'s total exp: {}".format(self.name, self.exp))
 
+# create different class types
 class Fighter(Player):
 	"""Defines Fighter Class"""
 	def __init__(self, name):
@@ -114,8 +121,6 @@ class Mage(Player):
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 4, 'BASE_ATK': 1, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 3, 'BASE_SPD': 2, 'BASE_LUCK': 1}
 		self.stats_init()
 		
-
-
 class Rogue(Player):
 	"""Defines Rogue Class"""
 	def __init__(self, name):
@@ -142,7 +147,6 @@ class Slime(Enemy):
 		self.luck = 1
 		self.exp = 10
 		
-
 class Item:
 	"""Define item class"""
 	def __init__(self):
@@ -234,7 +238,6 @@ def battle(all_combatants, party, enemies):
 			print("-------------------")
 		print("*-------------------*")
 		print()
-
 
 		for person in all_combatants:
 			if person in party and person.hp > 0:
