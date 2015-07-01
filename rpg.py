@@ -7,7 +7,6 @@ class Character:
 	def __init__(self):
 		pass
 
-
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
 
@@ -19,7 +18,7 @@ class Character:
 
 		hit_prob = random.randrange(self.luck, hit_chance)
 
-		if hit_prob < 25:
+		if hit_prob < 15:
 			print("{}'s attack missed!".format(self.name))
 			return
 		else:
@@ -88,8 +87,12 @@ class Player(Character):
 				break
 
 	def calculate_experience(self, enemies):
+		exp_gain = 0
 		for enemy in enemies:
 			self.exp = self.exp + enemy.exp
+			exp_gain = exp_gain + enemy.exp
+		print("{} gained {} exp!".format(self.name, exp_gain))
+		print("{}'s total exp: {}".format(self.name, self.exp))
 
 class Fighter(Player):
 	"""Defines Fighter Class"""
@@ -122,8 +125,6 @@ class Rogue(Player):
 		self.stats = {'BASE_HP': 10, 'BASE_MP': 4, 'BASE_ATK': 7, 'BASE_DFS': 4, 'BASE_MAGIC_ATK': 7, 'BASE_SPD': 10, 'BASE_LUCK': 10}
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 2, 'BASE_ATK': 2, 'BASE_DFS': 1, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 3, 'BASE_LUCK': 3}
 		self.stats_init()
-		
-
 
 class Enemy(Character):
 	"""Create Enemy"""
@@ -268,6 +269,7 @@ def battle(all_combatants, party, enemies):
 								enemies.pop(player_target)
 						else:
 							print("You don't have enough mp for that!")
+							valid_input = False
 							continue
 					elif choice == "3":
 						print("You ready yourself for an attack.")
@@ -312,8 +314,6 @@ def battle(all_combatants, party, enemies):
 def main():
 
 	player = character_create()
-	
-
 	friend = Mage("Dude")
 
 	print("You are {}, the {}".format(player.name, player.class_type))
