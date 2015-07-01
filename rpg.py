@@ -3,14 +3,13 @@ import random
 
 class Character:
 	"""Create Character Class"""
-	def __init__(self, new_name):
-		self.name = new_name
-		self.stats = {}
+	name = ""
+	def __init__(self):
+		pass
 
 
 	def basic_attack(self, defender):
 		damage = self.atk - defender.dfs
-		
 
 		spd_diff = self.spd - defender.spd
 
@@ -54,11 +53,10 @@ class Character:
 
 class Player(Character):
 	"""Create Player Class"""
-	def __init__(self, *args, **kwargs):
-		self.base_hp = 10
-		self.lvl = 1
-		self.exp = 0
-		super().__init__(*args, **kwargs)
+	exp = 0
+	lvl = 1
+	def __init__(self):
+		pass
 
 	def stats_init(self):
 		self.hp = self.stats['BASE_HP']
@@ -72,34 +70,17 @@ class Player(Character):
 	def level_up(self):
 		print()
 		print("*--- {} LEVELED UP! ---*".format(self.name))
-		print("Level {} stats:".format(self.lvl))
-		print("\tHP: {}".format(self.stats['BASE_HP']))
-		print("\tMP: {}".format(self.stats['BASE_MP']))
-		print("\tAttack: {}".format(self.stats['BASE_ATK']))
-		print("\tDefense: {}".format(self.stats['BASE_DFS']))
-		print("\tMagic Attack: {}".format(self.stats['BASE_MAGIC_ATK']))
-		print("\tDefense: {}".format(self.stats['BASE_SPD']))
-		print("\tMagic Attack: {}".format(self.stats['BASE_LUCK']))
 		for stat, value in self.stats.items():
 			print("{}: {} + {} -->".format(stat, value, self.modifiers[stat]), end="")
 			self.stats[stat] = value + self.modifiers[stat]
 			print(self.stats[stat])
 		self.lvl += 1
-		print("Level {} stats:".format(self.lvl))
-		print("\tHP: {}".format(self.stats['BASE_HP']))
-		print("\tMP: {}".format(self.stats['BASE_MP']))
-		print("\tAttack: {}".format(self.stats['BASE_ATK']))
-		print("\tDefense: {}".format(self.stats['BASE_DFS']))
-		print("\tMagic Attack: {}".format(self.stats['BASE_MAGIC_ATK']))
 		print("*----------------------------------*")
 		print()
 		self.stats_init()
-		print(self.atk)
-		print(self.magic_atk)
 
 	def check_level_up(self):
 		self.levels = [100, 250, 500, 1200]
-		print(self.name)
 		for value in self.levels:
 			if self.exp >= value:
 				self.level_up()
@@ -112,34 +93,22 @@ class Player(Character):
 
 class Fighter(Player):
 	"""Defines Fighter Class"""
-	def __init__(self, *args, **kwargs):
+	def __init__(self, name):
+		self.name = name
+		self.stats = {}
 		self.class_type = "Fighter"
 		self.weapon = "sword"
-		self.stats['BASE_HP'] = 12
-		self.stats['BASE_MP'] = 2
-		self.stats['BASE_ATK'] = 10
-		self.stats['BASE_DFS'] = 5
-		self.stats['BASE_MAGIC_ATK'] = 2
-		self.stats['BASE_SPD'] = 4
-		self.stats['BASE_LUCK'] = 6
+		self.stats = {'BASE_HP': 12, 'BASE_MP': 2, 'BASE_ATK': 10, 'BASE_DFS': 5, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 4, 'BASE_LUCK': 6}
 		self.modifiers = {'BASE_HP': 4, 'BASE_MP': 1, 'BASE_ATK': 2, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 1, 'BASE_LUCK': 1}
 		self.stats_init()
-		super().__init__(*args, **kwargs)
 
 class Mage(Player):
 	"""Defines Mage Class"""
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	def __init__(self, name):
+		self.name = name
 		self.class_type = "Mage"
 		self.weapon = "wand"
-		self.lvl = 1
-		self.stats['BASE_HP'] = 10
-		self.stats['BASE_MP'] = 8
-		self.stats['BASE_ATK']  = 5
-		self.stats['BASE_DFS'] = 4
-		self.stats['BASE_MAGIC_ATK'] = 12
-		self.stats['BASE_SPD'] = 7
-		self.stats['BASE_LUCK'] = 5
+		self.stats = {'BASE_HP': 10, 'BASE_MP': 8, 'BASE_ATK': 5, 'BASE_DFS': 4, 'BASE_MAGIC_ATK': 12, 'BASE_SPD': 7, 'BASE_LUCK': 5}
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 4, 'BASE_ATK': 1, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 3, 'BASE_SPD': 2, 'BASE_LUCK': 1}
 		self.stats_init()
 		
@@ -147,18 +116,11 @@ class Mage(Player):
 
 class Rogue(Player):
 	"""Defines Rogue Class"""
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	def __init__(self, name):
+		self.name = name
 		self.class_type = "Rogue"
 		self.weapon = "dagger"
-		self.lvl = 1
-		self.stats['BASE_HP'] = 10
-		self.stats['BASE_MP'] = 4
-		self.stats['BASE_ATK']  = 7
-		self.stats['BASE_DFS'] = 4
-		self.stats['BASE_MAGIC_ATK'] = 7
-		self.stats['BASE_SPD'] = 10
-		self.stats['BASE_LUCK'] = 10
+		self.stats = {'BASE_HP': 10, 'BASE_MP': 4, 'BASE_ATK': 7, 'BASE_DFS': 4, 'BASE_MAGIC_ATK': 7, 'BASE_SPD': 10, 'BASE_LUCK': 10}
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 2, 'BASE_ATK': 2, 'BASE_DFS': 1, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 3, 'BASE_LUCK': 3}
 		self.stats_init()
 		
@@ -166,13 +128,12 @@ class Rogue(Player):
 
 class Enemy(Character):
 	"""Create Enemy"""
-	def __init__(self, new_name):
-		super().__init__(new_name)
-
+	def __init__(self):
+		pass
 class Slime(Enemy):
 	"""Create Beast Enemy"""
 	def __init__(self):
-		super().__init__("Slime")
+		self.name = "Slime"
 		self.hp = 10
 		self.mp = 0
 		self.atk = 7
@@ -185,7 +146,6 @@ class Slime(Enemy):
 class Item:
 	"""Define item class"""
 	def __init__(self):
-		self.modifiers = {}
 		self.name = ""
 		self.type = ""
 
@@ -193,7 +153,6 @@ class Weapon(Item):
 	"""Define Weapon Item"""
 	def __init__(self):
 		self.type = "weapon"
-		super(Weapon, self).__init__()
 
 def character_create():
 	name = input("Hello brave adventurer, what is your name? : ")
@@ -346,7 +305,6 @@ def battle(all_combatants, party, enemies):
 		elif not enemies_alive and party_alive:
 			print("All enemies have been defeated!")
 			for person in party:
-				print(person.name)
 				person.calculate_experience(enemies_defeated)
 				person.check_level_up()
 		else:
@@ -355,10 +313,9 @@ def battle(all_combatants, party, enemies):
 def main():
 
 	player = character_create()
-	print(player.stats)
+	
 
 	friend = Mage("Dude")
-	print(friend.stats)
 
 	print("You are {}, the {}".format(player.name, player.class_type))
 	print()
