@@ -95,7 +95,6 @@ class Fighter(Player):
 	"""Defines Fighter Class"""
 	def __init__(self, name):
 		self.name = name
-		self.stats = {}
 		self.class_type = "Fighter"
 		self.weapon = "sword"
 		self.stats = {'BASE_HP': 12, 'BASE_MP': 2, 'BASE_ATK': 10, 'BASE_DFS': 5, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 4, 'BASE_LUCK': 6}
@@ -140,7 +139,7 @@ class Slime(Enemy):
 		self.dfs = 4
 		self.spd = 4
 		self.luck = 1
-		self.exp = 50
+		self.exp = 10
 		
 
 class Item:
