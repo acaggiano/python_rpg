@@ -26,9 +26,9 @@ class Character:
 				print("The attack has no effect.")
 				damage = 0
 			else:
+				# calculate crit chance and damage
+				crit = random.randrange(self.luck, 100, 5)
 				if(crit > 85):
-					# calculate crit chance and damage
-					crit = random.randrange(self.luck, 100, 5)
 					damage = int(damage * 1.5)
 					print("Critical Hit!")
 				# calculate defender hp
@@ -50,6 +50,7 @@ class Character:
 
 	def defend(self):
 		pass
+
 
 class Player(Character):
 	"""Create Player Class"""
@@ -100,6 +101,26 @@ class Player(Character):
 		print("{} gained {} exp!".format(self.name, exp_gain))
 		print("{}'s total exp: {}".format(self.name, self.exp))
 
+	def check_inventory(self):
+		if len(self.inventory) > 0:
+			for idx, item in enumerate(self.inventory):
+				print("{}. {}".format(idx, item.name))
+
+			valid_item = False
+			while not valid_item:
+				item = input("Pick an item: ")
+				try:
+					item = int(item)
+					valid_item = 0 <= item <= idx
+				except ValueError:
+					pass
+				if not valid_item:
+					print("Invalid Target")
+			else:
+				self.inventory[item].use_potion(self)
+		else:
+			raise Exception("You have no items")
+
 # create different class types
 class Fighter(Player):
 	"""Defines Fighter Class"""
@@ -107,6 +128,7 @@ class Fighter(Player):
 		self.name = name
 		self.class_type = "Fighter"
 		self.weapon = "sword"
+		self.inventory = []
 		self.stats = {'BASE_HP': 12, 'BASE_MP': 2, 'BASE_ATK': 10, 'BASE_DFS': 5, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 4, 'BASE_LUCK': 6}
 		self.modifiers = {'BASE_HP': 4, 'BASE_MP': 1, 'BASE_ATK': 2, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 1, 'BASE_LUCK': 1}
 		self.stats_init()
@@ -117,6 +139,7 @@ class Mage(Player):
 		self.name = name
 		self.class_type = "Mage"
 		self.weapon = "wand"
+		self.inventory = []
 		self.stats = {'BASE_HP': 10, 'BASE_MP': 8, 'BASE_ATK': 5, 'BASE_DFS': 4, 'BASE_MAGIC_ATK': 12, 'BASE_SPD': 7, 'BASE_LUCK': 5}
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 4, 'BASE_ATK': 1, 'BASE_DFS': 3, 'BASE_MAGIC_ATK': 3, 'BASE_SPD': 2, 'BASE_LUCK': 1}
 		self.stats_init()
@@ -127,6 +150,7 @@ class Rogue(Player):
 		self.name = name
 		self.class_type = "Rogue"
 		self.weapon = "dagger"
+		self.inventory = []
 		self.stats = {'BASE_HP': 10, 'BASE_MP': 4, 'BASE_ATK': 7, 'BASE_DFS': 4, 'BASE_MAGIC_ATK': 7, 'BASE_SPD': 10, 'BASE_LUCK': 10}
 		self.modifiers = {'BASE_HP': 2, 'BASE_MP': 2, 'BASE_ATK': 2, 'BASE_DFS': 1, 'BASE_MAGIC_ATK': 2, 'BASE_SPD': 3, 'BASE_LUCK': 3}
 		self.stats_init()
@@ -147,16 +171,30 @@ class Slime(Enemy):
 		self.luck = 1
 		self.exp = 10
 		
-class Item:
+class Item():
 	"""Define item class"""
+	name = ""
 	def __init__(self):
-		self.name = ""
-		self.type = ""
+		pass
 
 class Weapon(Item):
 	"""Define Weapon Item"""
 	def __init__(self):
-		self.type = "weapon"
+		self.type = "Weapon"
+
+class Potion(Item):
+	def __init__(self):
+		self.name = "Healing potion"
+		self.type = "Aid"
+		self.short_desc = "Heals 5 HP"
+		self.hp = 5
+
+	def use_potion(self, user):
+		print("{} used a potion!".format(user.name))
+		if user.hp + self.hp < user.stats['BASE_HP']:
+			user.hp = user.hp + self.hp
+		else:
+			user.hp = user.stats['BASE_HP']
 
 def character_create():
 	name = input("Hello brave adventurer, what is your name? : ")
@@ -213,7 +251,6 @@ def pick_target(enemies):
 			pass
 		if not valid_target:
 			print("Invalid Target")
-		continue
 	else:
 		return target
 
@@ -242,7 +279,7 @@ def battle(all_combatants, party, enemies):
 		for person in all_combatants:
 			if person in party and person.hp > 0:
 				print("{}'s Turn".format(person.name))
-				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Stand there and do nothing")
+				print("1. Attack\n2. Magic Attack *MP Cost: 2*\n3. Defend\n4. Use Item")
 
 				valid_input = False
 
@@ -278,7 +315,12 @@ def battle(all_combatants, party, enemies):
 						print("You ready yourself for an attack.")
 						person.dfs = person.dfs * 1.5
 					elif choice == "4":
-						print("You stand there and do nothing.")
+						try:
+							print("Your inventory")
+							person.check_inventory()
+						except Exception:
+							print("You have no items.")
+							valid_input = False
 					else:
 						print("Input not recoginized!")
 						continue
@@ -317,6 +359,8 @@ def battle(all_combatants, party, enemies):
 def main():
 
 	player = character_create()
+	potion = Potion()
+	player.inventory.append(potion)
 	friend = Mage("Dude")
 
 	print("You are {}, the {}".format(player.name, player.class_type))
